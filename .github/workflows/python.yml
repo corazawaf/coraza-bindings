@@ -47,7 +47,7 @@ jobs:
 
       - name: Cache Homebrew packages (macOS)
         if: runner.os == 'macOS'
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: ~/Library/Caches/Homebrew/downloads
           key: brew-python-${{ matrix.os }}-${{ hashFiles('.github/workflows/python.yml') }}
@@ -59,7 +59,7 @@ jobs:
 
       - name: Cache libcoraza build
         id: cache-libcoraza
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: /tmp/libcoraza-${{ steps.libcoraza.outputs.version }}
           key: libcoraza-${{ steps.libcoraza.outputs.version }}-${{ runner.os }}-${{ runner.arch }}
