@@ -1,5 +1,5 @@
 [build-system]
-requires = ["scikit-build-core>=0.9"]
+requires = ["scikit-build-core>=0.12"]
 build-backend = "scikit_build_core.build"
 
 [project]
@@ -25,7 +25,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest>=7"]
+test = ["pytest>=8"]
 
 [tool.scikit-build]
 cmake.build-type = "Release"
