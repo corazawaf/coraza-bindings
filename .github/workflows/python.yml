@@ -5,12 +5,10 @@ on:
     branches: [develop, main]
     paths:
       - 'python/**'
-      - 'swig/coraza.i'
       - '.github/workflows/python.yml'
   pull_request:
     paths:
       - 'python/**'
-      - 'swig/coraza.i'
       - '.github/workflows/python.yml'
 
 permissions:

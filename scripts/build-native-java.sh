@@ -16,10 +16,10 @@ set -euo pipefail
 : "${JAVA_HOME:?JAVA_HOME must be set}"
 
 LIBCORAZA_A="${LIBCORAZA_ROOT}/libcoraza.a"
-# coraza.i is bundled with the bindings repo (not part of libcoraza's build output).
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CORAZA_I="${SCRIPT_DIR}/../swig/coraza.i"
+# coraza.i ships with libcoraza starting from v1.3.0.
+CORAZA_I="${LIBCORAZA_ROOT}/coraza.i"
 CORAZA_H="${LIBCORAZA_ROOT}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 JAVA_GEN="${OUTPUT_DIR}/java-gen"
 mkdir -p "${OUTPUT_DIR}" "${JAVA_GEN}"

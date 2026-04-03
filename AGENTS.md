@@ -174,7 +174,7 @@ mvn -B verify
 
 | File | Purpose |
 |---|---|
-| `swig/coraza.i` | SWIG interface — bundled in this repo; pinned to the target libcoraza version |
+| `coraza.i` (in libcoraza) | SWIG interface — ships with libcoraza >= v1.3.0; taken from `${LIBCORAZA_ROOT}/coraza.i` |
 | `scripts/fetch-libcoraza.sh` | Clone + build libcoraza at pinned version |
 | `scripts/build-native-java.sh` | SWIG → JNI compile for Java |
 | `java/.../jni_register.c` | `JNI_OnLoad` for callback `RegisterNatives` |

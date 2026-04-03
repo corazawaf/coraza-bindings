@@ -23,9 +23,8 @@ if(NOT EXISTS "${LIBCORAZA_A}")
     message(FATAL_ERROR "libcoraza.a not found at ${LIBCORAZA_A}")
 endif()
 
-# coraza.i is bundled with the bindings repo (not part of libcoraza's build output).
-# This lets us pin the interface independently from the libcoraza release tag.
-set(CORAZA_I "${CMAKE_CURRENT_SOURCE_DIR}/../swig/coraza.i")
+# coraza.i ships with libcoraza starting from v1.3.0.
+set(CORAZA_I "${LIBCORAZA_ROOT}/coraza.i")
 if(NOT EXISTS "${CORAZA_I}")
     message(FATAL_ERROR "coraza.i not found at ${CORAZA_I}")
 endif()

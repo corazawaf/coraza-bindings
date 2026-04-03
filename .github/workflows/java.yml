@@ -5,13 +5,11 @@ on:
     branches: [develop, main]
     paths:
       - 'java/**'
-      - 'swig/coraza.i'
       - 'scripts/build-native-java.sh'
       - '.github/workflows/java.yml'
   pull_request:
     paths:
       - 'java/**'
-      - 'swig/coraza.i'
       - 'scripts/build-native-java.sh'
       - '.github/workflows/java.yml'
 

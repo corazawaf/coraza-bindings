@@ -10,9 +10,7 @@
 # After running, LIBCORAZA_ROOT points to a directory containing:
 #   libcoraza.a       — static archive for linking
 #   coraza/coraza.h   — C header
-#
-# Note: the SWIG interface file (coraza.i) is bundled with this repo at
-# swig/coraza.i and is NOT taken from the libcoraza build output.
+#   coraza.i          — SWIG interface file (shipped with libcoraza >= v1.3.0)
 
 set -euo pipefail
 
