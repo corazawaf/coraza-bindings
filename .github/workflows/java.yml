@@ -78,15 +78,26 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install autoconf automake libtool swig
 
+      - name: Detect libcoraza ref type
+        id: libcoraza-ref
+        run: |
+          v="${{ steps.libcoraza.outputs.version }}"
+          if [[ "$v" =~ ^[0-9] ]] || [[ "$v" =~ ^v[0-9] ]]; then
+            echo "is_tag=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_tag=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Cache libcoraza build
         id: cache-libcoraza
+        if: steps.libcoraza-ref.outputs.is_tag == 'true'
         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: /tmp/libcoraza-${{ steps.libcoraza.outputs.version }}
           key: libcoraza-${{ steps.libcoraza.outputs.version }}-${{ matrix.platform }}
 
       - name: Build libcoraza
-        if: steps.cache-libcoraza.outputs.cache-hit != 'true'
+        if: steps.libcoraza-ref.outputs.is_tag != 'true' || steps.cache-libcoraza.outputs.cache-hit != 'true'
         run: bash scripts/fetch-libcoraza.sh ${{ steps.libcoraza.outputs.version }}
 
       - name: Set LIBCORAZA_ROOT
