@@ -1,0 +1,54 @@
+# Build outputs
+/tmp/
+*.o
+*.a
+*.so
+*.dylib
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+.env
+*.pth
+python/src/coraza/_coraza_swig.py
+python/src/coraza/_coraza*.so
+python/src/coraza/_coraza*.dylib
+python/_skbuild/
+python/CMakeFiles/
+python/CMakeCache.txt
+python/cmake_install.cmake
+python/_cmake_test_compile/
+
+# Java
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+.mvn/timing.properties
+java/coraza-java/gen/
+java/coraza-java/coraza_wrap.c
+java/coraza-java/src/main/resources/org/corazawaf/coraza/native/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# libcoraza build cache (local only)
+/libcoraza-build/

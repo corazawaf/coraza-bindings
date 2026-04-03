@@ -1,0 +1,8 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Open PRs only, never auto-merge — upgrades may break pinned SHA digests.
+    open-pull-requests-limit: 5

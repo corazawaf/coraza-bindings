@@ -1,0 +1,141 @@
+name: Java
+
+on:
+  push:
+    branches: [develop, main]
+    paths:
+      - 'java/**'
+      - 'swig/coraza.i'
+      - 'scripts/build-native-java.sh'
+      - '.github/workflows/java.yml'
+  pull_request:
+    paths:
+      - 'java/**'
+      - 'swig/coraza.i'
+      - 'scripts/build-native-java.sh'
+      - '.github/workflows/java.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-native:
+    name: JNI on ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux-x86_64
+          - os: ubuntu-24.04-arm
+            platform: linux-aarch64
+          - os: macos-13
+            platform: mac-x86_64
+          - os: macos-latest
+            platform: mac-aarch64
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Read libcoraza version
+        id: libcoraza
+        run: echo "version=$(cat java/libcoraza_version | tr -d '[:space:]')" >> "$GITHUB_OUTPUT"
+
+      - name: Install Go
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
+        with:
+          go-version: stable
+
+      - name: Set up Java
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y swig autoconf automake libtool
+
+      - name: Cache Homebrew packages (macOS)
+        if: runner.os == 'macOS'
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/Library/Caches/Homebrew/downloads
+          key: brew-java-${{ matrix.platform }}-${{ hashFiles('.github/workflows/java.yml') }}
+          restore-keys: brew-java-${{ matrix.platform }}-
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install autoconf automake libtool swig
+
+      - name: Cache libcoraza build
+        id: cache-libcoraza
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: /tmp/libcoraza-${{ steps.libcoraza.outputs.version }}
+          key: libcoraza-${{ steps.libcoraza.outputs.version }}-${{ matrix.platform }}
+
+      - name: Build libcoraza
+        if: steps.cache-libcoraza.outputs.cache-hit != 'true'
+        run: bash scripts/fetch-libcoraza.sh ${{ steps.libcoraza.outputs.version }}
+
+      - name: Set LIBCORAZA_ROOT
+        run: echo "LIBCORAZA_ROOT=/tmp/libcoraza-${{ steps.libcoraza.outputs.version }}" >> "$GITHUB_ENV"
+
+      - name: Build and test (Maven)
+        working-directory: java/coraza-java
+        run: mvn -B verify
+
+      - name: Upload native library
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: native-${{ matrix.platform }}
+          path: java/coraza-java/target/native/libcoraza_jni.*
+          if-no-files-found: error
+
+  assemble-fat-jar:
+    name: Assemble fat JAR
+    needs: build-native
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Java
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Download all native artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: native-*
+          path: native-artifacts/
+          merge-multiple: false
+
+      - name: Place native libs into resources
+        run: |
+          BASE=java/coraza-java/src/main/resources/org/corazawaf/coraza/native
+          for dir in native-artifacts/native-*/; do
+            platform=$(basename "$dir" | sed 's/native-//')
+            dest="${BASE}/${platform}"
+            mkdir -p "$dest"
+            cp "$dir"* "$dest/"
+          done
+
+      - name: Assemble fat JAR (skip tests — tested in build-native)
+        working-directory: java/coraza-java
+        run: mvn -B package -DskipTests
+
+      - name: Upload fat JAR
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: coraza-java-fat
+          path: java/coraza-java/target/coraza-*.jar
+          if-no-files-found: error

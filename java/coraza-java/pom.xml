@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.corazawaf</groupId>
+  <artifactId>coraza</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <name>coraza-java</name>
+  <description>Java bindings for the OWASP Coraza Web Application Firewall</description>
+  <url>https://github.com/corazawaf/coraza-bindings</url>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Path to the built libcoraza tree — set from scripts/fetch-libcoraza.sh -->
+    <libcoraza.root>${env.LIBCORAZA_ROOT}</libcoraza.root>
+    <!-- Directory where build-native-java.sh writes the JNI lib + Java sources -->
+    <native.output.dir>${project.build.directory}/native</native.output.dir>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.10.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <!-- Step 1: generate SWIG Java sources + compile JNI shared library -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>build-jni</id>
+            <!-- generate-sources so that SWIG Java files are present before compile -->
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${project.basedir}/../../scripts/build-native-java.sh</executable>
+              <environmentVariables>
+                <LIBCORAZA_ROOT>${libcoraza.root}</LIBCORAZA_ROOT>
+                <OUTPUT_DIR>${native.output.dir}</OUTPUT_DIR>
+              </environmentVariables>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Step 2: add SWIG-generated Java sources to the compile source root -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <id>add-swig-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${native.output.dir}/java-gen</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Step 3: JUnit 5 test runner -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
+        <configuration>
+          <forkCount>1</forkCount>
+          <reuseForks>true</reuseForks>
+          <!--
+            Add the native build output to java.library.path so that
+            the SWIG-generated corazaJNI static initializer can find
+            libcoraza_jni.{so,dylib} via System.loadLibrary("coraza_jni").
+            Also set coraza.native.dir so that NativeLoader (used by the
+            high-level Waf class) finds the library without unpacking it
+            from a JAR (which doesn't exist in test mode).
+          -->
+          <argLine>-Djava.library.path=${native.output.dir} -Dcoraza.native.dir=${native.output.dir}</argLine>
+        </configuration>
+      </plugin>
+
+      <!-- Step 4: assemble fat JAR -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>false</addClasspath>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <!-- Native libs assembled by CI assemble-fat-jar job land here -->
+      <resource>
+        <directory>${project.build.directory}/native-resources</directory>
+      </resource>
+    </resources>
+  </build>
+
+</project>

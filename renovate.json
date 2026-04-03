@@ -1,0 +1,16 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "automerge": false,
+  "prCreation": "immediate",
+  "packageRules": [
+    {
+      "matchManagers": ["maven", "pip_requirements", "pip_setup_cfg", "pep621"],
+      "automerge": false
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "automerge": false
+    }
+  ]
+}

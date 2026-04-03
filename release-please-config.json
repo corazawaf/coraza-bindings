@@ -1,0 +1,21 @@
+{
+  "release-type": "simple",
+  "separate-pull-requests": true,
+  "packages": {
+    "python": {
+      "release-type": "simple",
+      "package-name": "coraza-python",
+      "changelog-path": "CHANGELOG.md",
+      "version-file": "src/coraza/_version.py",
+      "tag-component": "python",
+      "component": "python"
+    },
+    "java": {
+      "release-type": "java",
+      "package-name": "coraza-java",
+      "changelog-path": "CHANGELOG.md",
+      "tag-component": "java",
+      "component": "java"
+    }
+  }
+}
