@@ -91,7 +91,7 @@ jobs:
         run: mvn -B verify
 
       - name: Upload native library
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: native-${{ matrix.platform }}
           path: java/coraza-java/target/native/libcoraza_jni.*
@@ -134,7 +134,7 @@ jobs:
         run: mvn -B package -DskipTests
 
       - name: Upload fat JAR
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: coraza-java-fat
           path: java/coraza-java/target/coraza-*.jar
