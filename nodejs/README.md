@@ -201,6 +201,40 @@ waf.free();
 
 ---
 
+## Express middleware
+
+See [`examples/express-middleware.ts`](examples/express-middleware.ts) for a
+complete drop-in Express middleware that:
+
+- Processes connection, URI, request headers, and request body
+- Returns a `text/plain 403` response on block (customizable)
+- Attaches the buffered body to `req.rawBody` for downstream handlers
+- Calls `processLogging()` when the response finishes
+
+```ts
+import express from "express";
+import { Waf } from "@corazawaf/coraza";
+import { corazaMiddleware } from "./examples/express-middleware.js";
+
+const waf = await Waf.create({
+  rules: [
+    "SecRuleEngine On",
+    `SecRule ARGS "@rx <script" "id:1,phase:2,deny,status:403,msg:'XSS'"`,
+  ],
+  onRuleMatch: (log) => console.error("[coraza]", log),
+});
+
+const app = express();
+app.use(corazaMiddleware(waf));
+app.get("/", (req, res) => res.send("Hello!"));
+app.listen(3000);
+```
+
+> **Note:** `application/json` bodies are not parsed into `ARGS` by default.
+> To inspect JSON fields, add `SecRequestBodyProcessor JSON` to your rules.
+
+---
+
 ## Coraza version
 
 The bundled WASM is compiled from `github.com/corazawaf/coraza/v3` at the
