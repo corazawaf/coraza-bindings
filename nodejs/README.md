@@ -248,4 +248,4 @@ bash scripts/build-wasm.sh   # from repository root
 
 ## License
 
-Apache 2.0 — Copyright 2024 OWASP Coraza contributors
+Apache 2.0 — Copyright 2026 Juan Pablo Tosso <pablo@owasp.org> and Coraza Contributors

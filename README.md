@@ -83,4 +83,9 @@ auto-merged** — a maintainer must review and merge them.
 
 Apache License 2.0 — see [LICENSE](LICENSE).
 
-Copyright 2024 OWASP Coraza contributors.
+Copyright 2026 Juan Pablo Tosso <pablo@owasp.org> and Coraza Contributors.
+
+## Author and Maintainer
+
+**Juan Pablo Tosso** <pablo@owasp.org>  
+OWASP Coraza project lead and primary maintainer of this repository.

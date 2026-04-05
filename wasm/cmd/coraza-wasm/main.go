@@ -1,4 +1,4 @@
-// Copyright 2024 OWASP Coraza contributors
+// Copyright 2026 Juan Pablo Tosso <pablo@owasp.org> and Coraza Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 // Package main is the WASM reactor module for coraza-wasm.

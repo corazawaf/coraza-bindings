@@ -56,4 +56,4 @@ in `nodejs/src/loader.ts` registers no-ops when the user has not opted in.
 
 ## License
 
-Apache 2.0 — Copyright 2024 OWASP Coraza contributors
+Apache 2.0 — Copyright 2026 Juan Pablo Tosso <pablo@owasp.org> and Coraza Contributors

@@ -1,4 +1,4 @@
-// Copyright 2024 OWASP Coraza contributors
+// Copyright 2026 Juan Pablo Tosso <pablo@owasp.org> and Coraza Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import { WASI } from "node:wasi";
