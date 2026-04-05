@@ -50,5 +50,10 @@ java/coraza-java/src/main/resources/org/corazawaf/coraza/native/
 .DS_Store
 Thumbs.db
 
+# Node.js / WASM
+nodejs/wasm/coraza.wasm
+nodejs/dist/
+nodejs/node_modules/
+
 # libcoraza build cache (local only)
 /libcoraza-build/

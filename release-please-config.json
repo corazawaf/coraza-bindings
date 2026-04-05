@@ -16,6 +16,13 @@
       "changelog-path": "CHANGELOG.md",
       "tag-component": "java",
       "component": "java"
+    },
+    "nodejs": {
+      "release-type": "node",
+      "package-name": "@corazawaf/coraza",
+      "changelog-path": "CHANGELOG.md",
+      "tag-component": "nodejs",
+      "component": "nodejs"
     }
   }
 }
