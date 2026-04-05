@@ -12,7 +12,7 @@
 
   <name>coraza-java</name>
   <description>Java bindings for the OWASP Coraza Web Application Firewall</description>
-  <url>https://github.com/corazawaf/coraza-bindings</url>
+  <url>https://github.com/jptosso/coraza-bindings</url>
 
   <licenses>
     <license>
