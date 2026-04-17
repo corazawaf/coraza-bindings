@@ -52,7 +52,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Cache Maven packages
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.m2/repository
           key: maven-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/pom.xml') }}
@@ -68,7 +68,7 @@ jobs:
 
       - name: Cache Homebrew packages (macOS)
         if: runner.os == 'macOS'
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/Library/Caches/Homebrew/downloads
           key: brew-java-${{ matrix.platform }}-${{ hashFiles('.github/workflows/java.yml') }}
@@ -91,7 +91,7 @@ jobs:
       - name: Cache libcoraza build
         id: cache-libcoraza
         if: steps.libcoraza-ref.outputs.is_tag == 'true'
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: /tmp/libcoraza-${{ steps.libcoraza.outputs.version }}
           key: libcoraza-${{ steps.libcoraza.outputs.version }}-${{ matrix.platform }}
@@ -130,7 +130,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Cache Maven packages
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.m2/repository
           key: maven-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/pom.xml') }}
